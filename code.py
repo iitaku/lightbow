@@ -2,6 +2,7 @@ import time
 import math
 import random
 import gc
+import digitalio
 import board
 from rainbowio import colorwheel
 import neopixel
@@ -84,11 +85,22 @@ def mix(color_1, color_2, weight_2):
             int(color_1[1] * weight_1 + color_2[1] * weight_2),
             int(color_1[2] * weight_1 + color_2[2] * weight_2))
 
-power(1.7, False)
+switch = digitalio.DigitalInOut(board.A2)
+switch.direction = digitalio.Direction.INPUT
+switch.pull = digitalio.Pull.DOWN
 
-i = 0
+state = False
+
+power(1.2, False)
+
+# i = 0
 while True:
-    strip.brightness = 0.3 + math.sin(math.radians(i)) * 0.1
-    strip.show()
-    i += 1
- 
+
+    # strip.brightness = 0.3 + math.sin(math.radians(i)) * 0.1
+    # strip.show()
+    # i += 1
+
+    if switch.value:
+        state = not state
+        power(1.2, state)
+    
