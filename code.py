@@ -61,8 +61,20 @@ colors.append(color_off())
 # colors.append(color_mono((255, 255, 255))) # Silver
 # colors.append(color_mono((255, 120, 0))) # Gold
 # colors.append(color_gradation((0, 0, 255), (255, 255, 255))) # Snow 
-colors.append(color_gradation((255, 20, 50), (252, 50, 150))) # Cherry blossom 
+# colors.append(color_gradation((255, 20, 51), (255, 150, 150))) # Cherry blossom 
 # colors.append(color_step(((50, 0, 0), (0, 50, 0)), 8))
+
+# [Neon colors](https://www.freepik.com/premium-vector/6-different-neon-color-palettes_33392915.htm)
+colors.append(color_mono(( 12, 236, 221))) #0cecdd
+colors.append(color_mono((255, 243,  56))) #fff338
+colors.append(color_mono((255, 103, 231))) #ff67e7
+colors.append(color_mono((196,   0, 255))) #c400ff
+
+def mx(cs, bias):
+    vs = ()
+    for c in cs:
+        vs.append(int(c * bias) % 256)
+    return vs
 
 def power(duration, reverse):
     """
@@ -114,15 +126,47 @@ power(1.2, False)
 
 elapsed = 0
 start_time = time.monotonic()
+idx = 0
+idxf = 0.0
+idxf2 = 0.0
+b = 0
 while True:
-    if switch.value:
-        elapsed = time.monotonic() - start_time
-    else:
-        start_time = time.monotonic()
-        # elapsed = 0
+    # if switch.value:
+    #     elapsed = time.monotonic() - start_time
+    # else:
+    #     start_time = time.monotonic()
+    #     # elapsed = 0
 
-    if elapsed > 1:
-        mode = (mode + 1) % len(colors)
-        power(1.2, False)
-        elapsed = 0
-        start_time = time.monotonic()
+    # if elapsed > 1:
+    #     mode = (mode + 1) % len(colors)
+    #     power(1.2, False)
+    #     elapsed = 0
+    #     start_time = time.monotonic()
+    idx = int(idxf)
+    for i in range(NUM_PIXELS):
+        v = ((i // 4) % 4)
+        i2 = (i + idx) % NUM_PIXELS
+        if v == 0:
+            c = [ 12, 236, 221]
+        elif v == 1:
+            c = [255, 243,  56]
+        elif v == 2:
+            c = [255, 103, 231]
+        elif v == 3:
+            c = [196,   0, 255]
+        if i % 4 == 0:
+            c = [0, 0, 0]
+
+        # for j in range(3):
+        #     c[j] = int(c[j] * b)
+            #c[j] = int(c[j])
+        # print(c)
+        strip[i2] = c
+        
+    strip.show()
+
+    idxf = idxf + 0.5
+    idxf2 = idxf2 + 0.5
+    
+    b = (math.sin(idxf2) + 1.0) / 2.0
+    # print(b)
