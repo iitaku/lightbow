@@ -65,10 +65,7 @@ colors.append(color_off())
 # colors.append(color_step(((50, 0, 0), (0, 50, 0)), 8))
 
 # [Neon colors](https://www.freepik.com/premium-vector/6-different-neon-color-palettes_33392915.htm)
-colors.append(color_mono(( 12, 236, 221))) #0cecdd
-colors.append(color_mono((255, 243,  56))) #fff338
-colors.append(color_mono((255, 103, 231))) #ff67e7
-colors.append(color_mono((196,   0, 255))) #c400ff
+cs = [( 12, 236, 221), (255, 243,  56), (255, 103, 231), (196,   0, 255)]
 
 def mx(cs, bias):
     vs = ()
@@ -126,47 +123,32 @@ power(1.2, False)
 
 elapsed = 0
 start_time = time.monotonic()
-idx = 0
-idxf = 0.0
-idxf2 = 0.0
-b = 0
+i = 0
+
+toggle = False
+
 while True:
-    # if switch.value:
-    #     elapsed = time.monotonic() - start_time
-    # else:
-    #     start_time = time.monotonic()
-    #     # elapsed = 0
+    if switch.value:
+        elapsed = time.monotonic() - start_time
+    else:
+        start_time = time.monotonic()
 
-    # if elapsed > 1:
-    #     mode = (mode + 1) % len(colors)
-    #     power(1.2, False)
-    #     elapsed = 0
-    #     start_time = time.monotonic()
-    idx = int(idxf)
-    for i in range(NUM_PIXELS):
-        v = ((i // 4) % 4)
-        i2 = (i + idx) % NUM_PIXELS
-        if v == 0:
-            c = [ 12, 236, 221]
-        elif v == 1:
-            c = [255, 243,  56]
-        elif v == 2:
-            c = [255, 103, 231]
-        elif v == 3:
-            c = [196,   0, 255]
-        if i % 4 == 0:
-            c = [0, 0, 0]
-
-        # for j in range(3):
-        #     c[j] = int(c[j] * b)
-            #c[j] = int(c[j])
-        # print(c)
-        strip[i2] = c
-        
-    strip.show()
-
-    idxf = idxf + 0.5
-    idxf2 = idxf2 + 0.5
+    if elapsed > 1:
+        toggle = not toggle
+        elapsed = 0
+        start_time = time.monotonic()
     
-    b = (math.sin(idxf2) + 1.0) / 2.0
-    # print(b)
+    if toggle:
+        for j in range(NUM_PIXELS):
+            c = cs[(j // 4) % 4]
+            if j % 4 == 0:
+                c = (0, 0, 0)
+            strip[(j + (i // 2)) % NUM_PIXELS] = c
+    else:
+        strip[0] = (255, 255, 255)
+        strip[1] = (255, 255, 255)
+        for j in range(2, NUM_PIXELS):
+            strip[j] = (0, 0, 0)
+    
+    strip.show()
+    i += 1
